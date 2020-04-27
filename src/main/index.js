@@ -1,5 +1,3 @@
-'use strict'
-
 import { app, BrowserWindow } from 'electron'
 
 /**
@@ -45,7 +43,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
 
 /**
  * Auto Updater
