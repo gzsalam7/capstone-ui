@@ -100,7 +100,7 @@
       },
       recordGestures: (playShortcut) => {
         let vm = this;
-        var pyshell = new PythonShell('./recordGestures.py')
+        var pyshell = new PythonShell('./recordGestures.py', {pythonPath: 'python'})
           let x = pyshell.on('message', (message) => {
             let gest = message.split(" ")[1]
             console.log(gest)
@@ -109,7 +109,7 @@
             for (const [name, value] of gestureArray) {
               if (value.gesture == gest) {
                 console.log(value.name, gest)
-                PythonShell.run('./playShortcut.py', {args: [value.name]}, function (err) {
+                PythonShell.run('./playShortcut.py', {args: [value.name], pythonPath: 'python'}, function (err) {
                   if (err) throw err;
                   console.log('finished');
                 })
