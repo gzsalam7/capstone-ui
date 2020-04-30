@@ -7,10 +7,9 @@
             <label for="description">Description</label><b-form-input id="description" type="text" v-model="description"></b-form-input>
             <label for="shortcut">Shortcut</label>
             <b-input-group>
-            <b-form-select v-model="script" id="shortcut" :options="shortcuts"></b-form-select>
             <b-button @click="newShortcut">Record New Shortcut</b-button>
             </b-input-group> <br>
-            <b-button @click="runScript">Record The Hand Gesture</b-button><br><br>
+            <b-button @click="recordNewGesture">Record The Hand Gesture</b-button><br><br>
             <b-button @click="add">Create Gesture</b-button>
         <!-- </form> -->
         </div>
@@ -30,7 +29,7 @@ export default {
             name: '',
             type: '',
             description: '',
-            script: '',
+            gesture: '04_new',
         }
     },
     methods: {
@@ -44,12 +43,17 @@ export default {
                 case 'win64' : return 'start';
                 default : return 'xdg-open';
             }
-    },
+        },
         newShortcut() {
             var sys = require('sys');
             var exec = require('child_process').exec;       
-            exec(this.getCommandLine() + ' ' + './capstone/recordShortcut.py ' + this.name);
-      },
+            exec(this.getCommandLine() + ' ' + '.recordShortcut.py ' + this.name);
+        },
+        recordNewGesture() {
+            var sys = require('sys');
+            var exec = require('child_process').exec;       
+            exec(this.getCommandLine() + ' ' + './recordNewGesture.py');
+        },
     }
 }
 </script>

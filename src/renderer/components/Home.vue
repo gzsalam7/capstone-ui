@@ -9,12 +9,15 @@
                 <p style="margin: 10px auto;" @click="selectGesture">{{ gesture.name }}</p>
             </div>
             <p class="addBtn" @click="addGesture">Add New Gesture +</p>
+            <p class="addBtn" @click="setGestureArea">Set Gesture Area</p>
+            <p class="addBtn" @click="checkRecording">Start Recording</p>
         </div>
         <div 
           class="gesture" 
           :name="curGesture.name" 
           :type="curGesture.type" 
           :description="curGesture.description"
+          :gesture="curGesture.gesture"
           :shortcuts="shortcuts"
           @edit="editWindow"
           @add="add"
@@ -31,37 +34,33 @@
   import SideNav from './SideNav.vue'
   import Gesture from './Gesture.vue'
   import Add from './Add.vue'
-import { PythonShell } from "python-shell"
+  import { PythonShell } from "python-shell"
   import gestures from './gestures.json'
   export default {
     name: 'home',
     components: { GestureHeader, FixedHeader, SideNav, Gesture, Add },
-    created() {
-      var fs = require("fs");
-      // var data = fs.readFileSync('src/shortcuts/name_shortcuts.txt');
-      // this.shortcuts = data.toString().split("\n")
-    },
-    beforeUpdate() {
-      this.recordGestures();
-    },
     data () {
       return {
         electron: process.versions.electron,
         index: 0,
-        currentComponent: Add,
+        currentComponent: Gesture,
         componentArray: [GestureHeader, Gesture, Add],
         gestureNames: [ 'Exit Window', 'Open Google Chrome' ],
         shortcuts: [],
         gestures: gestures,
-        curGesture: {
-          name: 'Exit Windowss',
-          type: 'Hand',
-          description: 'Closes the Current window',
-          // script: 'exit_window.py'
-        }
+        curGesture: Object.values(gestures)[0],
+        recording: false
       }
     },
     methods: {
+      getCommandLine() {
+            switch (process.platform) { 
+                case 'darwin' : return 'open';
+                case 'win32' : return 'start';
+                case 'win64' : return 'start';
+                default : return 'xdg-open';
+            }
+        },
       selectGesture: function (event) {
         alert(event.target.textContent)
         this.currentComponent = Gesture
@@ -99,25 +98,70 @@ import { PythonShell } from "python-shell"
         var fs = require('fs');
         fs.writeFile('src/renderer/components/gestures.json', json, 'utf8')
       },
-      recordGestures: function () {
-        let gesture = ""
-        var pyshell = new PythonShell('./capstone/recordGestures.py')
-          pyshell.on('message', function (message) {
-          console.log(message);
-          gesture = message;
+      recordGestures: (playShortcut) => {
+        let vm = this;
+        var pyshell = new PythonShell('./recordGestures.py')
+          let x = pyshell.on('message', (message) => {
+            let gest = message.split(" ")[1]
+            console.log(gest)
+            console.log("GESTURES",gestures)
+            let gestureArray = Object.entries(gestures);
+            for (const [name, value] of gestureArray) {
+              if (value.gesture == gest) {
+                console.log(value.name, gest)
+                PythonShell.run('./playShortcut.py', {args: [value.name]}, function (err) {
+                  if (err) throw err;
+                  console.log('finished');
+                })
+              }
+            }
           });
           pyshell.end(function (err) {
-          if (err){
-              console.log(process.cwd())
-              throw err;
-          };
-          console.log('finished');
-          var pyshell = new PythonShell('./capstone/playShortcut.py')
+            if (err){
+                console.log(process.cwd())
+                throw err;
+            };
+            playShortcut()
           });
+        // let x = new Promise((resolve, reject) => {
+        //   let result;
+        //   let pyshell = new PythonShell('./recordGestures.py');
+        //   pyshell.on('message', function (message) {
+        //     result = message;
+        //   });
+          
+        //   pyshell.end(function (err, code, signal) {
+        //     if (err) reject(err);
+        //     console.log('The exit code was: ' + code);
+        //     console.log('The exit signal was: ' + signal);
+        //     console.log('finished');
+        //     resolve(result);
+        //   });
+          
+        // });
+        // x.then((v) => {
+        //   console.log(v)
+        //   console.log("PROMISE")nd
+        // })
+
       },
       playShortcut: function (gesture) {
-        var pyshell = new PythonShell('./capstone/playShortcut.py')
-      } 
+        this.recordGestures(this.playShortcut)
+      },
+      setGestureArea: function () {
+        var sys = require('sys');
+        var exec = require('child_process').exec;       
+        exec(this.getCommandLine() + ' ' + './getGestureBox.py')
+      },
+      checkRecording: function () {
+        if (this.recording == false) {
+          this.recording = true;
+          this.recordGestures(this.playShortcut);
+        } else if (this.recording == true) {
+            this.recording = false;
+            location.reload();
+        }
+      }
     }
   }
 </script>

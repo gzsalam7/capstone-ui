@@ -1,14 +1,20 @@
 {
-      "Exit Window": {
-        "name": "Exit Window",
+      "Alt-tab": {
+        "name": "Alt-tab",
         "type": "Hand",
-        "description": "Closes the Current window",
-        "script": "exit_window.py"
+        "description": "Presses the keys ALT and TAB together",
+        "gesture": "01_palm"
       },
-      "Open Google Chrome": {
-        "name": "Open Google Chrome",
+      "Course Website": {
+        "name": "Course Website",
         "type": "Hand",
-        "description": "Opens Chrome",
-        "script": "open_app.py"
+        "description": "Opens Avenue to do work",
+        "gesture": "02_l"
+      },
+      "Grindin'": {
+        "name": "Grindin",
+        "type": "Hand",
+        "description": "Opens working music",
+        "gesture":  "03_fist"
       }
     }
