@@ -1,18 +1,17 @@
 <template>
-    <div>
-        <h2>Gesture Name</h2> <br>
-            <h4>{{ name }}</h4> <br>
-            <h3>Gesture Type</h3> <br>
-            <h4>{{ type }}</h4 > <br>
-            <h3>Description</h3> <br>
+    <div style="padding: 2%">
+      <div class="content">
+            <h2 style="font-weight: 600;">{{ name }}</h2>
+            <h3 style="font-weight: 300;">Gesture Type</h3>
+            <p>{{ type }}</p>
+            <h3 style="font-weight: 300;">Description</h3>
             <p>{{ description }}</p>
             <h3>Action</h3>
             <p>{{ script }}</p>
-            <button @click="runScript">Script</button>
-            <button @click="record">RECORD</button>
-            <font-awesome-icon icon="edit" @click="editWindow" />
-            <font-awesome-icon icon="trash-alt" />
-            
+            <b-button @click="runScript()"></b-button>
+            <font-awesome-icon class="fa-lg" style="float: right; margin: 10px 10px 20px 0px;" icon="trash-alt" @click="deleteGesture"/>
+            <font-awesome-icon class="fa-lg" style="float: right; margin: 10px 10px 20px 10px;" icon="edit" @click="editWindow" />
+      </div>        
     </div>
 </template>
 
@@ -39,7 +38,7 @@ import { PythonShell } from "python-shell"
         });
       },
       runScript() {
-        var pyshell = new PythonShell('./src/shortcuts/' + this.script)
+        var pyshell = new PythonShell('./src/shortcuts/playShortcut.py')
         pyshell.on('message', function (message) {
           console.log(message);
         });
@@ -50,7 +49,19 @@ import { PythonShell } from "python-shell"
           };
           console.log('finished');
         });
+      },
+      deleteGesture() {
+        this.$emit('deleteGesture', 1)
       }
     }
   }
 </script>
+
+<style scoped>
+.content {
+  margin: auto; 
+  padding: 5%; 
+  background-color: #eeeeee; 
+  border-radius: 5px;
+}
+</style>

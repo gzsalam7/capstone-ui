@@ -1,24 +1,24 @@
 /* eslint-disable */
 <template>
-  <div id="wrapper">
-    <gesture-header></gesture-header>
-    <main class="container">
+  <div >
+    <!-- <gesture-header></gesture-header> -->
+    <main class="wrapper">
         <div class="menu">
-            <span v-for="(gesture, index) in gestureNames" :key="index">
-                <p @click="selectGesture">{{ gesture }}</p>
-                <br>
-            </span>
-            <p @click="addGesture">Add New Gesture +</p>
+            <div class="title"><p style="margin: auto;">Gesture Navigation</p></div>
+            <div class="gestureList" v-for="(gesture, index) in gestures" :key="index">
+                <p style="margin: 10px auto;" @click="selectGesture">{{ gesture.name }}</p>
+            </div>
+            <p class="addBtn" @click="addGesture">Add New Gesture +</p>
         </div>
         <div 
           class="gesture" 
           :name="curGesture.name" 
           :type="curGesture.type" 
           :description="curGesture.description"
-          :script="curGesture.script"
           :shortcuts="shortcuts"
           @edit="editWindow"
           @add="add"
+          @deleteGesture="deleteGesture"
           :is="currentComponent">
         </div>
     </main>
@@ -31,35 +31,33 @@
   import SideNav from './SideNav.vue'
   import Gesture from './Gesture.vue'
   import Add from './Add.vue'
+import { PythonShell } from "python-shell"
+  import gestures from './gestures.json'
   export default {
     name: 'home',
     components: { GestureHeader, FixedHeader, SideNav, Gesture, Add },
+    created() {
+      var fs = require("fs");
+      // var data = fs.readFileSync('src/shortcuts/name_shortcuts.txt');
+      // this.shortcuts = data.toString().split("\n")
+    },
+    beforeUpdate() {
+      this.recordGestures();
+    },
     data () {
       return {
         electron: process.versions.electron,
-        currentComponent: Gesture,
+        index: 0,
+        currentComponent: Add,
         componentArray: [GestureHeader, Gesture, Add],
         gestureNames: [ 'Exit Window', 'Open Google Chrome' ],
-        shortcuts: ['exit_window.py', 'open_app.py'],
-        gestures: {
-          'Exit Window': {
-            name: 'Exit Window',
-            type: 'Hand',
-            description: 'Closes the Current window',
-            script: 'exit_window.py'
-          },
-          'Open Google Chrome': {
-            name: 'Open Google Chrome',
-            type: 'Hand',
-            description: 'Opens Chrome',
-            script: 'open_app.py'
-          }
-        },
+        shortcuts: [],
+        gestures: gestures,
         curGesture: {
           name: 'Exit Windowss',
           type: 'Hand',
           description: 'Closes the Current window',
-          script: 'exit_window.py'
+          // script: 'exit_window.py'
         }
       }
     },
@@ -87,10 +85,39 @@
         this.gestureNames.push(data.name)
         this.curGesture = this.gestures[data.name]
         this.currentComponent = Gesture
+        let json = JSON.stringify(this.gestures);
+        var fs = require('fs');
+        fs.writeFile('src/renderer/components/gestures.json', json, 'utf8')
       },
       editWindow: function () {
         alert("c")
-      }
+      },
+      deleteGesture: function () {
+        console.log(this.gestures[this.curGesture.name])
+        delete this.gestures[this.curGesture.name];
+        let json = JSON.stringify(this.gestures);
+        var fs = require('fs');
+        fs.writeFile('src/renderer/components/gestures.json', json, 'utf8')
+      },
+      recordGestures: function () {
+        let gesture = ""
+        var pyshell = new PythonShell('./capstone/recordGestures.py')
+          pyshell.on('message', function (message) {
+          console.log(message);
+          gesture = message;
+          });
+          pyshell.end(function (err) {
+          if (err){
+              console.log(process.cwd())
+              throw err;
+          };
+          console.log('finished');
+          var pyshell = new PythonShell('./capstone/playShortcut.py')
+          });
+      },
+      playShortcut: function (gesture) {
+        var pyshell = new PythonShell('./capstone/playShortcut.py')
+      } 
     }
   }
 </script>
@@ -106,39 +133,54 @@
 
   body { font-family: 'Source Sans Pro', sans-serif; }
 
-    #wrapper {
-    background:
-      radial-gradient(
-        ellipse at top left,
-        rgba(255, 255, 255, 1) 40%,
-        rgba(229, 229, 229, .9) 100%
-      );
-    height: 100%;
-    }
-
-  .container {
+  .wrapper {
       display: flex;
       font-family: sans-serif;
       font-size: 1.25rem;
       line-height: 150%;
-      text-shadow: 0 2px 2px #b6701e;
   }
 
   .menu {
-      background-color: #ff9e2c;
-      height: 90vh;
-      width: 20%;
+      height: 100vh;
       flex: 1;
-      overflow-y: scroll;
+      /* overflow-y: scroll; */
       text-align: center;
+      color: white;
+      background-color: rgb(40,40,40);
+      /* background: url('http://fc03.deviantart.net/fs71/i/2013/270/f/a/blurred_sea_by_thevirtualdragon-d6o4p2p.png') */
   }
   
   .gesture {
-      background-color: #b6701e;
-      height: 90vh;
+      background-color: white;
+      height: 100vh;
       width: 20%;
-      flex: 2;
+      flex: 3;
   }
+
+  .title {
+    padding: 5%; 
+    background-color: #2574a9;
+    margin: auto;
+  }
+
+  .gestureList {
+    border: 1px solid rgba(255,255,255,0.2);
+    margin: auto;
+    transition: 0.3s;
+  }
+  .gestureList:hover {
+    background-color: teal;
+  }
+
+  .addBtn {
+    font-weight: 600;
+    padding-top: 10px;
+    transition: 0.3s;
+  }
+  .addBtn:hover {
+    background-color: teal;
+  }
+
 
 
 </style>

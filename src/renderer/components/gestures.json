@@ -1,0 +1,14 @@
+{
+      "Exit Window": {
+        "name": "Exit Window",
+        "type": "Hand",
+        "description": "Closes the Current window",
+        "script": "exit_window.py"
+      },
+      "Open Google Chrome": {
+        "name": "Open Google Chrome",
+        "type": "Hand",
+        "description": "Opens Chrome",
+        "script": "open_app.py"
+      }
+    }

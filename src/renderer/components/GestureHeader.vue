@@ -1,7 +1,7 @@
 <template class="background">
   <fixed-header>
     <div class="navbar">
-      <h2>Gesture Navigation</h2>
+      <p class="title">GESTURE RECOGNITION UI</p>
     </div>
   </fixed-header>
 </template>
@@ -18,7 +18,9 @@ export default {
 <style scoped>
 
  .navbar {
-   background-color: 255, 2, 255, 0.5;
+   background-color: #00909e;
+   border-bottom: .2em solid #0275d8;
+   justify-content: center;
  }
  .navbar.vue-fixed-header--isFixed {
   position: fixed;
@@ -26,5 +28,11 @@ export default {
   top: 0;
   width: 100vw;
 }
+
+  .title {
+    font-size: 1.7em;
+    font-weight: 600;
+    margin-bottom: 0px;
+  }
 </style>
 
