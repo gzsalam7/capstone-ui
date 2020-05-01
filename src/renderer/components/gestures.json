@@ -1,20 +1,20 @@
 {
-      "Alt-tab": {
-        "name": "Alt-tab",
+      "Open Task Manager": {
+        "name": "Open Task Manager",
         "type": "Hand",
-        "description": "Presses the keys ALT and TAB together",
+        "description": "Presses the keys CTRL ALT DEL together",
         "gesture": "01_palm"
       },
-      "Course Website": {
-        "name": "Course Website",
+      "Close Application": {
+        "name": "Close Application",
         "type": "Hand",
-        "description": "Opens Avenue to do work",
+        "description": "Closes current application",
         "gesture": "02_l"
       },
-      "Grindin'": {
-        "name": "Grindin",
+      "Open Notepad'": {
+        "name": "Open Notepad",
         "type": "Hand",
-        "description": "Opens working music",
+        "description": "Opens notepad application but opening search",
         "gesture":  "03_fist"
       }
     }
