@@ -10,7 +10,7 @@
             </div>
             <p class="addBtn" @click="addGesture">Add New Gesture +</p>
             <p class="addBtn" @click="setGestureArea">Set Gesture Area</p>
-            <p class="addBtn" @click="checkRecording">Start Recording</p>
+            <p class="addBtn" @click="checkRecording">Start/Stop Recording</p>
         </div>
         <div 
           class="gesture" 
@@ -62,7 +62,6 @@
             }
         },
       selectGesture: function (event) {
-        alert(event.target.textContent)
         this.currentComponent = Gesture
         for (const [key, value] of Object.entries(this.gestures)) {
           if (event.target.textContent === key) {
@@ -89,7 +88,7 @@
         fs.writeFile('src/renderer/components/gestures.json', json, 'utf8')
       },
       editWindow: function () {
-        alert("c")
+        console.log(this.curGesture)
       },
       deleteGesture: function () {
         console.log(this.gestures[this.curGesture.name])
@@ -123,35 +122,14 @@
             };
             playShortcut()
           });
-        // let x = new Promise((resolve, reject) => {
-        //   let result;
-        //   let pyshell = new PythonShell('./recordGestures.py');
-        //   pyshell.on('message', function (message) {
-        //     result = message;
-        //   });
-          
-        //   pyshell.end(function (err, code, signal) {
-        //     if (err) reject(err);
-        //     console.log('The exit code was: ' + code);
-        //     console.log('The exit signal was: ' + signal);
-        //     console.log('finished');
-        //     resolve(result);
-        //   });
-          
-        // });
-        // x.then((v) => {
-        //   console.log(v)
-        //   console.log("PROMISE")nd
-        // })
 
       },
       playShortcut: function (gesture) {
         this.recordGestures(this.playShortcut)
       },
       setGestureArea: function () {
-        var sys = require('sys');
-        var exec = require('child_process').exec;       
-        exec(this.getCommandLine() + ' ' + './getGestureBox.py')
+        var execFile = require('child_process').execFile;       
+        execFile('python', ['./getGestureBox.py'])
       },
       checkRecording: function () {
         if (this.recording == false) {

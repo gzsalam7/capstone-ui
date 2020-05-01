@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 2%">
+    <div style="padding: 2%;">
       <div class="content">
             <h2 style="font-weight: 600;">{{ name }}</h2>
             <h3 style="font-weight: 300;">Gesture Type</h3>
@@ -33,7 +33,8 @@ import { PythonShell } from "python-shell"
 <style scoped>
 .content {
   margin: auto; 
-  padding: 5%; 
+  padding: 5%;
+  padding-bottom: 10%; 
   background-color: #eeeeee; 
   border-radius: 5px;
 }

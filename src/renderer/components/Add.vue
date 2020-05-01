@@ -2,6 +2,13 @@
     <div style="padding: 2%">
         <div class="content">
         <!-- <form onsubmit="add()"> -->
+            <p style="font-weight: 600">Add New Gesture</p>
+            <p style="font-size: 15px; line-height: 1">To create a new gesture, you must first type in a name and description
+                (*this is required*), then you can click Record New shortcut and follow
+                the on screen instructions on the new terminal window that opens, then
+                Record The Hand Gesture and follow the instructions on the new camera window
+                then finally you can click Create Gesture to load the Gesture
+            </p>
             <label for="name">Gesture Name</label> <b-form-input id="name" type="text" v-model="name"></b-form-input>
             <!-- <h2>Type:</h2> <select v-model="type"><option value="hand">Hand</option></select> -->
             <label for="description">Description</label><b-form-input id="description" type="text" v-model="description"></b-form-input>
@@ -45,14 +52,12 @@ export default {
             }
         },
         newShortcut() {
-            var sys = require('sys');
-            var exec = require('child_process').exec;       
-            exec(this.getCommandLine() + ' ' + '.recordShortcut.py ' + this.name);
+            var execFile = require('child_process').execFile;       
+            execFile('python', ['.recordShortcut.py ', this.name]);
         },
         recordNewGesture() {
-            var sys = require('sys');
-            var exec = require('child_process').exec;       
-            exec(this.getCommandLine() + ' ' + './recordNewGesture.py');
+            var execFile = require('child_process').execFile;       
+            execFile('python', ['./recordNewGesture.py']);
         },
     }
 }
